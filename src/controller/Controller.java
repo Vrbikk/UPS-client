@@ -44,7 +44,6 @@ public class Controller implements Initializable{
     @FXML
     public void sendButtonAction(ActionEvent actionEvent){
         connection.sendMessage(MessageType.DEBUG, TF_MESSAGE.getText());
-
         //drawQuestions(Integer.parseInt(TF_MESSAGE.getText()));
     }
 
@@ -251,6 +250,8 @@ public class Controller implements Initializable{
     }
 
     public void chooseQuestion(int questionId){
-        System.out.println(questionId);
+        if(connection != null && game.gameState == GameState.game_READY){
+            connection.sendMessage(MessageType.CHOOSE_QUESTION_C, Integer.toString(questionId));
+        }
     }
 }

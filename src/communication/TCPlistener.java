@@ -9,14 +9,14 @@ import java.io.IOException;
  */
 public class TCPlistener extends Thread{
 
-    private Connection con;
+    private Connection connnection;
     public boolean running;
     private BufferedReader br;
     private Controller cont;
 
 
     public TCPlistener(Connection con, BufferedReader br, Controller cont){
-        this.con = con;
+        this.connnection = con;
         this.br = br;
         running = true;
         this.cont = cont;
@@ -31,7 +31,7 @@ public class TCPlistener extends Thread{
                 message = br.readLine();
                 if(message != null){
                     if(MessageResolution.isValidMessage(message)) {
-                        con.game.gameAction(MessageResolution.decomposeMessage(message));
+                        connnection.game.gameAction(MessageResolution.decomposeMessage(message));
                     }else{
                         System.out.println("bad MESSAGE recieved: " + message);
                     }
@@ -41,18 +41,18 @@ public class TCPlistener extends Thread{
             } catch (IOException e) {
 
                 try {
-                    Thread.sleep(50); //FUCK JAVA why you so broken?
+                    Thread.sleep(30); //FUCK JAVA why you so broken?
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
 
-                if(!con.userDisconnect){
+                if(!connnection.userDisconnect){
                     Platform.runLater(new Runnable() {
                         @Override public void run() {
                             cont.MessageBox("Server disconnected!");
                         }});
                     try {
-                        Thread.sleep(50); //FUCK JAVA why you so broken?
+                        Thread.sleep(30); //FUCK JAVA why you so broken?
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }

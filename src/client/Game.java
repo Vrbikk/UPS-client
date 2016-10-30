@@ -20,6 +20,20 @@ class DrawTask implements Runnable {
     }
 }
 
+class gameMessageTask implements Runnable{
+
+    private String text;
+    private Controller cont;
+    public gameMessageTask(String text, Controller controller) {
+        this.text = text;
+        this.cont = controller;
+    }
+
+    public void run(){
+        cont.gameMessage(text);
+    }
+}
+
 /**
  * Created by vrbik on 7.10.16.
  */
@@ -45,10 +59,8 @@ public class Game {
     public void LOGIN_S(Message msg){
         if(gameState == gameState.game_LOGGING){
                 id = Integer.parseInt(msg.data);
-                cont.gameMessage("Logged as (" + cont.TF_NAME.getText() + ") [" + id + "]");
+                Platform.runLater(new gameMessageTask("Logged as (" + cont.TF_NAME.getText() + ") [" + id + "]", cont));
                 gameState = GameState.game_LOGGED;
-        }else{
-            cont.gameMessage("recieving dupl. login answer");
         }
     }
 
@@ -79,18 +91,15 @@ public class Game {
                 break;
             }
             case BROADCAST:{
-                cont.gameMessage(msg.data);
+                Platform.runLater(new gameMessageTask(msg.data, cont));
                 break;
             }
             case ERROR:{
-                cont.gameMessage("error: " + msg.data);
+                Platform.runLater(new gameMessageTask("error: " + msg.data, cont));
                 break;
             }
             case UNICAST_S:{
-
-                System.out.println("unicast_S");
-
-                cont.gameMessage("msg: " + msg.data);
+                Platform.runLater(new gameMessageTask("msg: " + msg.data, cont));
                 break;
             }
             case READY_S:{
@@ -102,7 +111,7 @@ public class Game {
                 break;
             }
             default:{
-                cont.gameMessage("invalid message");
+                Platform.runLater(new gameMessageTask("invalid text" + msg.data, cont));
                 break;
             }
         }
