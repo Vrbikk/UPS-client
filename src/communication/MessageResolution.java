@@ -1,5 +1,9 @@
 package communication;
 
+import client.Question;
+
+import java.util.ArrayList;
+
 /**
  * Created by vrbik on 8.10.16.
  */
@@ -87,11 +91,19 @@ public final class MessageResolution {
                 return true;
             }
             case READY_S:{
-                if(data.equals("ok")){
+                if(data.equals("ok")){ //FUG :--DDDDDDDDDD
                     return true;
                 }else{
                     return false;
                 }
+            }
+            case QUESTIONS_S:{
+                try{
+                    getQuestions(data);
+                }catch(Exception e){
+                    return false;
+                }
+                return true;
             }
             default:{
                 return false;
@@ -105,4 +117,46 @@ public final class MessageResolution {
         return new Message(MessageType.getMessageType(Integer.parseInt(parts[1])), Integer.parseInt(parts[0]), parts[2], input);
     }
 
+    public static ArrayList<Question> getQuestions(String content) throws Exception {
+        ArrayList<Question> questions = new ArrayList<Question>();
+
+        String[] items = content.split("-");
+        if(items.length < 6) {
+            throw new Exception();
+        }
+
+        for(int i = 0; i < items.length; i++){
+            String[] q = items[i].split("_");
+            if(q.length != 3){
+                throw new Exception();
+            }
+
+            int question_id = Integer.parseInt(q[0]);
+            if(question_id < 0 || question_id > (items.length - 1)){
+                throw new Exception();
+            }
+            int points = Integer.parseInt(q[1]);
+
+            if(points < 0){
+                throw new Exception();
+            }
+
+            boolean avaible;
+            if(q[2].equals("1")){
+                avaible = true;
+            }else if(q[2].equals("0")){
+                avaible = false;
+            }else{
+                throw new Exception();
+            }
+
+            Question question = new Question(question_id, points, avaible);
+            questions.add(question);
+        }
+        return questions;
+    }
 }
+
+
+
+

@@ -38,7 +38,6 @@ public class TCPlistener extends Thread{
                 }else{
                     throw new IOException();
                 }
-
             } catch (IOException e) {
 
                 try {

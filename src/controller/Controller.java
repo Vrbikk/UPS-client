@@ -2,20 +2,31 @@ package controller;
 
 import client.Game;
 import client.GameState;
+import client.Question;
 import communication.Connection;
 import communication.MessageType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 
@@ -26,25 +37,25 @@ public class Controller implements Initializable{
     public TextField TF_NAME;
     public TextArea logTextArea;
     public TextField TF_MESSAGE;
-    public VBox questionHbox;
-
+    public GridPane questionGridPane;
     Connection connection;
     Game game;
 
     @FXML
     public void sendButtonAction(ActionEvent actionEvent){
         connection.sendMessage(MessageType.DEBUG, TF_MESSAGE.getText());
+
+        //drawQuestions(Integer.parseInt(TF_MESSAGE.getText()));
     }
 
     public void connectButtonAction(ActionEvent actionEvent) {
         if(connection == null) {
-
             String ip = TF_IP.getText();
-
             if (validIP(ip) && isPort(TF_PORT.getText())) {
                 connection = new Connection(ip, Integer.parseInt(TF_PORT.getText()), this);
                 if(connection.connect(game)){
                     logTextArea.clear();
+                    questionGridPane.getChildren().clear();
                     gameMessage("connected");
                     game.setUp(connection);
                     connection.startListening();
@@ -70,7 +81,6 @@ public class Controller implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         game = new Game(this);
 
         final int maxLenTF_NAME = 20;
@@ -95,6 +105,16 @@ public class Controller implements Initializable{
                 }
             }
         });
+
+        questionGridPane.setHgap(10);
+        questionGridPane.setVgap(10);
+        questionGridPane.getColumnConstraints().clear();
+
+        for(int i = 0; i < 3; i++){
+            ColumnConstraints col = new ColumnConstraints();
+            col.setHalignment(HPos.CENTER);
+            questionGridPane.getColumnConstraints().add(col);
+        }
     }
 
     private boolean validIP (String ip) {
@@ -176,9 +196,42 @@ public class Controller implements Initializable{
             }
     }
 
-    public void drawQuestions(){
+    public void drawQuestions(ArrayList<Question> questions){
+        clearQuestions();
 
+        int count = 0;
+        int maxRow = questions.size() / 3;
+        questionGridPane.getRowConstraints().clear();
 
+        for(int i = 0; i < maxRow; i++){
+            RowConstraints row = new RowConstraints();
+            row.setPercentHeight(20);
+            row.setValignment(VPos.CENTER);
+            questionGridPane.getRowConstraints().add(row);
+        }
+
+        for(int row = 0; row < maxRow; row++){
+            for(int col = 0; col < 3; col++) {
+
+                final Question question = questions.get(count++);
+                Button button = new Button(Integer.toString(question.points));
+                button.setPrefWidth(120);
+                button.setPrefHeight(90);
+                button.setStyle("-fx-font-size: 18pt; ");
+
+                button.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override public void handle(ActionEvent e) {
+                        chooseQuestion(question.questionId);
+                    }
+                });
+
+                if(!question.avaible){
+                    button.setDisable(true);
+                }
+
+                questionGridPane.add(button, col, row);
+            }
+        }
     }
 
     public void loginButtonAction(ActionEvent actionEvent) {
@@ -191,5 +244,13 @@ public class Controller implements Initializable{
         }else{
             MessageBox("you need to connect first!");
         }
+    }
+
+    public void clearQuestions(){
+        questionGridPane.getChildren().clear();
+    }
+
+    public void chooseQuestion(int questionId){
+        System.out.println(questionId);
     }
 }
