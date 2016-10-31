@@ -19,6 +19,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -43,8 +45,10 @@ public class Controller implements Initializable{
 
     @FXML
     public void sendButtonAction(ActionEvent actionEvent){
-        connection.sendMessage(MessageType.DEBUG, TF_MESSAGE.getText());
-        //drawQuestions(Integer.parseInt(TF_MESSAGE.getText()));
+        if(connection != null) {
+            connection.sendMessage(MessageType.ANSWERING_QUESTION_C, TF_MESSAGE.getText());
+            TF_MESSAGE.clear();
+        }
     }
 
     public void connectButtonAction(ActionEvent actionEvent) {
@@ -114,6 +118,18 @@ public class Controller implements Initializable{
             col.setHalignment(HPos.CENTER);
             questionGridPane.getColumnConstraints().add(col);
         }
+
+        TF_MESSAGE.setOnKeyPressed(new EventHandler<KeyEvent>()
+        {
+            @Override
+            public void handle(KeyEvent ke)
+            {
+                if (ke.getCode().equals(KeyCode.ENTER))
+                {
+                    sendButtonAction(new ActionEvent());
+                }
+            }
+        });
     }
 
     private boolean validIP (String ip) {

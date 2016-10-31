@@ -41,7 +41,7 @@ public class TCPlistener extends Thread{
             } catch (IOException e) {
 
                 try {
-                    Thread.sleep(30); //FUCK JAVA why you so broken?
+                    Thread.sleep(30);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
@@ -52,7 +52,7 @@ public class TCPlistener extends Thread{
                             cont.MessageBox("Server disconnected!");
                         }});
                     try {
-                        Thread.sleep(30); //FUCK JAVA why you so broken?
+                        Thread.sleep(30);
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
