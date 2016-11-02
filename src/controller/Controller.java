@@ -45,7 +45,7 @@ public class Controller implements Initializable{
 
     @FXML
     public void sendButtonAction(ActionEvent actionEvent){
-        if(connection != null) {
+        if(connection != null && TF_MESSAGE.getText() != null && !TF_MESSAGE.getText().equals("")) {
             connection.sendMessage(MessageType.ANSWERING_QUESTION_C, TF_MESSAGE.getText());
             TF_MESSAGE.clear();
         }
@@ -57,8 +57,7 @@ public class Controller implements Initializable{
             if (validIP(ip) && isPort(TF_PORT.getText())) {
                 connection = new Connection(ip, Integer.parseInt(TF_PORT.getText()), this);
                 if(connection.connect(game)){
-                    logTextArea.clear();
-                    questionGridPane.getChildren().clear();
+                    clearQuestions();
                     gameMessage("connected");
                     game.setUp(connection);
                     connection.startListening();
@@ -270,4 +269,6 @@ public class Controller implements Initializable{
             connection.sendMessage(MessageType.CHOOSE_QUESTION_C, Integer.toString(questionId));
         }
     }
+
+
 }

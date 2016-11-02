@@ -7,13 +7,11 @@ public class Message {
     public String raw;
     public MessageType type;
     public String data;
-    public int length;
 
-    public Message(MessageType type, int length, String data, String raw) {
+    public Message(MessageType type, String data, String raw) {
         this.type = type;
         this.data = data;
         this.raw = raw;
-        this.length = length;
     }
 
     @Override
@@ -22,7 +20,6 @@ public class Message {
                 "raw='" + raw + '\'' +
                 ", type=" + type +
                 ", data='" + data + '\'' +
-                ", length=" + length +
                 '}';
     }
 }

@@ -14,8 +14,8 @@ public final class MessageResolution {
 
 
     public static final Message composeMessage(MessageType type, String data){
-        String body = DELIMETER + Integer.toString(type.ordinal()) + DELIMETER + data + ENDING;
-        return new Message(type, body.length(), data, Integer.toString(body.length()) + body);
+        String body = Integer.toString(type.ordinal()) + DELIMETER + data + ENDING;
+        return new Message(type, data, body);
     }
 
     private static String getMessage(String input){
@@ -29,24 +29,18 @@ public final class MessageResolution {
 
         String message = getMessage(input);
 
-        if(message.length() < 5) return false;
+        if(message.length() < 3) return false;
 
         String[] items = message.split(DELIMETER);
 
-        if(items.length != 3) return false;
+        if(items.length != 2) return false;
 
         int type_int;
-        int len_int;
 
         try {
-           len_int = Integer.parseInt(items[0]);
-           type_int = Integer.parseInt(items[1]);
+           type_int = Integer.parseInt(items[0]);
         }
         catch(Exception e) {
-            return false;
-        }
-
-        if((len_int - 1) != (items[1].length() + items[2].length() + 2)) {// 2 * DELIMETER,  without ;
             return false;
         }
 
@@ -54,7 +48,7 @@ public final class MessageResolution {
             return false;
         }
 
-        if(!advancedDataValidation(items[2], MessageType.getMessageType(type_int))){
+        if(!advancedDataValidation(items[1], MessageType.getMessageType(type_int))){
             return false;
         }
 
@@ -114,7 +108,7 @@ public final class MessageResolution {
     public static final Message decomposeMessage(String input){
         String message = getMessage(input);
         String[] parts = message.split(DELIMETER);
-        return new Message(MessageType.getMessageType(Integer.parseInt(parts[1])), Integer.parseInt(parts[0]), parts[2], input);
+        return new Message(MessageType.getMessageType(Integer.parseInt(parts[0])), parts[1], input);
     }
 
     public static ArrayList<Question> getQuestions(String content) throws Exception {
