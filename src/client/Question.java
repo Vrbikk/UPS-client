@@ -8,10 +8,12 @@ public class Question {
     public int questionId;
     public int points;
     public boolean avaible;
+    public String category;
 
-    public Question(int questionId, int points, boolean avaible) {
+    public Question(int questionId, int points, boolean avaible, String category) {
         this.questionId = questionId;
         this.points = points;
         this.avaible = avaible;
+        this.category = category;
     }
 }

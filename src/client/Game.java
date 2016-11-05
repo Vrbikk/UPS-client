@@ -80,7 +80,7 @@ public class Game {
 
     synchronized public void gameAction(Message msg){
 
-        System.out.println("input: " + msg);
+        //System.out.println("input: " + msg);
 
         switch(msg.type){
             case DEBUG:{

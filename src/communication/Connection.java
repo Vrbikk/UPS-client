@@ -2,7 +2,6 @@ package communication;
 
 import client.Game;
 import controller.Controller;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -60,9 +59,7 @@ public class Connection{
     }
 
     public void sendMessage(MessageType type, String data){
-
         Message newMessage = MessageResolution.composeMessage(type, data);
-
         synchronized(this){
             if(this.socket.isConnected()){
                 outPrint.println(newMessage.raw);

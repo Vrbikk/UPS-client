@@ -25,6 +25,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -192,7 +193,7 @@ public class Controller implements Initializable{
 
         s = s.replaceAll("/", "\n");
 
-        logTextArea.appendText(timeStamp + s + "\n");
+        logTextArea.appendText(timeStamp + s + " \n");
     }
 
     public void disconnectButtonAction(ActionEvent actionEvent) {
@@ -228,16 +229,16 @@ public class Controller implements Initializable{
             for(int col = 0; col < 3; col++) {
 
                 final Question question = questions.get(count++);
-                Button button = new Button(Integer.toString(question.points));
+                Button button = new Button(question.category + "\n" + Integer.toString(question.points));
                 button.setPrefWidth(120);
                 button.setPrefHeight(90);
-                button.setStyle("-fx-font-size: 18pt; ");
-
+                button.setStyle("-fx-font-size: 13pt; ");
                 button.setOnAction(new EventHandler<ActionEvent>() {
                     @Override public void handle(ActionEvent e) {
                         chooseQuestion(question.questionId);
                     }
                 });
+                button.setTextAlignment(TextAlignment.CENTER);
 
                 if(!question.avaible){
                     button.setDisable(true);

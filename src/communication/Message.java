@@ -7,11 +7,13 @@ public class Message {
     public String raw;
     public MessageType type;
     public String data;
+    int len;
 
-    public Message(MessageType type, String data, String raw) {
+    public Message(MessageType type, String data, String raw, int len) {
         this.type = type;
         this.data = data;
         this.raw = raw;
+        this.len = len;
     }
 
     @Override

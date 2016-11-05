@@ -15,7 +15,9 @@ public final class MessageResolution {
 
     public static final Message composeMessage(MessageType type, String data){
         String body = Integer.toString(type.ordinal()) + DELIMETER + data + ENDING;
-        return new Message(type, data, body);
+        int len = body.getBytes().length;
+        String raw = Integer.toString(len) + DELIMETER + body;
+        return new Message(type, data, raw, len);
     }
 
     private static String getMessage(String input){
@@ -29,18 +31,24 @@ public final class MessageResolution {
 
         String message = getMessage(input);
 
-        if(message.length() < 3) return false;
+        if(message.length() < 5) return false;
 
         String[] items = message.split(DELIMETER);
 
-        if(items.length != 2) return false;
+        if(items.length != 3) return false;
 
+        int len_int;
         int type_int;
 
         try {
-           type_int = Integer.parseInt(items[0]);
+           len_int = Integer.parseInt(items[0]);
+           type_int = Integer.parseInt(items[1]);
         }
         catch(Exception e) {
+            return false;
+        }
+
+        if((len_int) != (items[1] + items[2]).getBytes().length + 2){  // 2 * DELIMETER,  without ;
             return false;
         }
 
@@ -48,7 +56,7 @@ public final class MessageResolution {
             return false;
         }
 
-        if(!advancedDataValidation(items[1], MessageType.getMessageType(type_int))){
+        if(!advancedDataValidation(items[2], MessageType.getMessageType(type_int))){
             return false;
         }
 
@@ -108,7 +116,7 @@ public final class MessageResolution {
     public static final Message decomposeMessage(String input){
         String message = getMessage(input);
         String[] parts = message.split(DELIMETER);
-        return new Message(MessageType.getMessageType(Integer.parseInt(parts[0])), parts[1], input);
+        return new Message(MessageType.getMessageType(Integer.parseInt(parts[1])), parts[2], input, Integer.parseInt(parts[0]));
     }
 
     public static ArrayList<Question> getQuestions(String content) throws Exception {
@@ -121,7 +129,7 @@ public final class MessageResolution {
 
         for(int i = 0; i < items.length; i++){
             String[] q = items[i].split("_");
-            if(q.length != 3){
+            if(q.length != 4){
                 throw new Exception();
             }
 
@@ -129,22 +137,29 @@ public final class MessageResolution {
             if(question_id < 0 || question_id > (items.length - 1)){
                 throw new Exception();
             }
-            int points = Integer.parseInt(q[1]);
+
+            String category = q[1];
+
+            if(category == ""){
+                throw new Exception();
+            }
+
+            int points = Integer.parseInt(q[2]);
 
             if(points < 0){
                 throw new Exception();
             }
 
             boolean avaible;
-            if(q[2].equals("1")){
+            if(q[3].equals("1")){
                 avaible = true;
-            }else if(q[2].equals("0")){
+            }else if(q[3].equals("0")){
                 avaible = false;
             }else{
                 throw new Exception();
             }
 
-            Question question = new Question(question_id, points, avaible);
+            Question question = new Question(question_id, points, avaible, category);
             questions.add(question);
         }
         return questions;
