@@ -50,8 +50,7 @@ public class Connection{
 
             //socket = new Socket(ip, port);
 
-            socketThread.join(1000);
-            socket.setTcpNoDelay(true);
+            socketThread.join(1200);
             socket.setSoTimeout(3000);
 
             outPrint = new PrintWriter(socket.getOutputStream());
